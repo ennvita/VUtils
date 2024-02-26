@@ -1,6 +1,6 @@
+using System;
 namespace VUtils {
     namespace MachineLearning {
-        using System;
         public static class NeuralNetwork {
             public static float Forward(float[,] inputs, float bias) {
                 float result = 0;
