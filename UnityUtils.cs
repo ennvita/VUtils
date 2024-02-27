@@ -29,8 +29,7 @@ namespace VUtils {
                 /// <summary>
                 /// <para>Singularity: Adds and sets the following components: PhysicsVelocity(add), PhysicsCollier(add), LocalTransform(set), ShipMovementComponent(add), ThrustComponent(add), ReplicantMatrix(add).</para>
                 /// </summary>
-                public static void SetShipComponents(EntityCommandBuffer.ParallelWriter ecb, int chunkIdx, Entity entity, float3 spawnPosition, float3 initialVelocity, float range = 0, float sense = 0)
-                {
+                public static void SetShipComponents(EntityCommandBuffer.ParallelWriter ecb, int chunkIdx, Entity entity, float3 spawnPosition, float3 initialVelocity, float range = 0, float sense = 0) {
                     // Tag Components
                     ecb.AddComponent<ShipTag>(chunkIdx, entity);
 
@@ -43,6 +42,10 @@ namespace VUtils {
 
                     // Ship Attribute Components
                     ecb.AddComponent(chunkIdx, entity, new Sensor() { Range = range, Sensitivity = sense });
+                }
+                public static void AddMatrixBuffers(EntityCommandBuffer.ParallelWriter ecb, int chunkIdx, Entity entity) {
+                    ecb.AddBuffer<Node>(chunkIdx, entity);
+                    ecb.AddBuffer<Interaction>(chunkIdx, entity);
                 }
             }
             public static class Constants {
