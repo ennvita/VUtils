@@ -1,4 +1,5 @@
 using System;
+using Unity.Entities;
 namespace VUtils {
     namespace MachineLearning {
         public static class NeuralNetwork {
@@ -9,6 +10,27 @@ namespace VUtils {
                 }
                 result += bias;
                 return result;
+            }
+            private static float Forward(float input, float bias, float weight) {
+                return input * bias + weight;
+            }
+            public static DynamicBuffer<Interaction> Forward(DynamicBuffer<Interaction> inters) {
+                DynamicBuffer<Interaction> tmp = new();
+                for (int i = 0; i < inters.Length; i++)
+                {
+                    var output = Forward(inters[i].Input.Value, inters[i].Output.Bias, inters[i].Weight);
+                    tmp[i] = new Interaction {
+                        ID = inters[i].ID,
+                        Input = inters[i].Input,
+                        Output = new Node {
+                            ID = inters[i].Output.ID,
+                            Bias = inters[i].Output.Value,
+                            Type = inters[i].Output.Type,
+                            Value = output
+                        }
+                    };
+                }
+                return tmp;
             }
             public static class ActivationFunctions {
                 public static float Sigmoid(float input) { return 1 / (float)(1 + Math.Exp(input)); }
