@@ -27,8 +27,15 @@ namespace VUtils {
             }
             public static class Singularity {
                 /// <summary>
-                /// <para>Singularity: Adds and sets the following components: PhysicsVelocity(add), PhysicsCollier(add), LocalTransform(set), ShipMovementComponent(add), ThrustComponent(add), ReplicantMatrix(add).</para>
+                /// Adds and sets the following components: PhysicsVelocity(add), PhysicsCollier(add), LocalTransform(set), ShipMovementComponent(add), ThrustComponent(add), ReplicantMatrix(add).
                 /// </summary>
+                /// <param name="ecb"></param>
+                /// <param name="chunkIdx"></param>
+                /// <param name="entity"></param>
+                /// <param name="spawnPosition"></param>
+                /// <param name="initialVelocity"></param>
+                /// <param name="range"></param>
+                /// <param name="sense"></param>
                 public static void SetShipComponents(EntityCommandBuffer.ParallelWriter ecb, int chunkIdx, Entity entity, float3 spawnPosition, float3 initialVelocity, float range = 0, float sense = 0) {
                     // Tag Components
                     ecb.AddComponent<ShipTag>(chunkIdx, entity);
@@ -43,6 +50,12 @@ namespace VUtils {
                     // Ship Attribute Components
                     ecb.AddComponent(chunkIdx, entity, new Sensor() { Range = range, Sensitivity = sense });
                 }
+                /// <summary>
+                /// Adds buffers to the entity which will represent the replicant
+                /// </summary>
+                /// <param name="ecb"></param>
+                /// <param name="chunkIdx"></param>
+                /// <param name="entity"></param>
                 public static void AddMatrixBuffers(EntityCommandBuffer.ParallelWriter ecb, int chunkIdx, Entity entity) {
                     ecb.AddBuffer<Node>(chunkIdx, entity);
                     ecb.AddBuffer<Interaction>(chunkIdx, entity);
@@ -50,11 +63,11 @@ namespace VUtils {
             }
             public static class Constants {
                 /// <summary>
-                /// <para>Float3 that represents world forward (0,0,1)</para>
+                /// Float3 that represents world forward (0,0,1)
                 /// </summary>
                 public static readonly float3 Forward = new(0, 0, 1);
                 /// <summary>
-                /// <para>Float3 that represents world up (0,1,0)</para>
+                /// Float3 that represents world up (0,1,0)
                 /// </summary>
                 public static readonly float3 Up = new(0, 1, 0);
             }
