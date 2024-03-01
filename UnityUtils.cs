@@ -29,38 +29,59 @@ namespace VUtils {
                 /// <summary>
                 /// Adds and sets the following components: PhysicsVelocity(add), PhysicsCollier(add), LocalTransform(set), ShipMovementComponent(add), ThrustComponent(add), ReplicantMatrix(add).
                 /// </summary>
-                /// <param name="ecb"></param>
+                /// <param name="writer"></param>
                 /// <param name="chunkIdx"></param>
                 /// <param name="entity"></param>
                 /// <param name="spawnPosition"></param>
                 /// <param name="initialVelocity"></param>
                 /// <param name="range"></param>
                 /// <param name="sense"></param>
-                public static void SetShipComponents(EntityCommandBuffer.ParallelWriter ecb, int chunkIdx, Entity entity, float3 spawnPosition, float3 initialVelocity, float range = 0, float sense = 0) {
+                public static void CreateShip(EntityCommandBuffer.ParallelWriter writer, int chunkIdx, Entity entity, float3 spawnPosition, float3 initialVelocity, SpawnerConfig config, ShipClass type, float range = 0, float sense = 0) {
                     // Tag Components
-                    ecb.AddComponent<ShipTag>(chunkIdx, entity);
+                    writer.AddComponent<ShipTag>(chunkIdx, entity);
+                    writer.AddComponent(chunkIdx, entity, new ShipType() { Value = type });
 
                     // Physics Components
-                    ecb.AddComponent<PhysicsVelocity>(chunkIdx, entity);
-                    ecb.AddComponent(chunkIdx, entity, new PhysicsCollider() { Value = SphereCollider.Create(new SphereGeometry() { Radius = 50f }) });
-                    ecb.SetComponent(chunkIdx, entity, LocalTransform.FromPositionRotationScale(spawnPosition, quaternion.identity, 50f));
-                    ecb.AddComponent(chunkIdx, entity, new Velocity() { Value = initialVelocity });
-                    ecb.AddComponent(chunkIdx, entity, new Thrust() { Value = float3.zero });
+                    writer.AddComponent<PhysicsVelocity>(chunkIdx, entity);
+                    writer.AddComponent(chunkIdx, entity, new PhysicsCollider() { Value = SphereCollider.Create(new SphereGeometry() { Radius = 50f }, config.ShipFilter) });
+                    writer.SetComponent(chunkIdx, entity, LocalTransform.FromPositionRotationScale(spawnPosition, quaternion.identity, 50f));
+                    writer.AddComponent(chunkIdx, entity, new Velocity() { Value = initialVelocity });
+                    writer.AddComponent(chunkIdx, entity, new Thrust() { Value = float3.zero });
 
                     // Ship Attribute Components
-                    ecb.AddComponent(chunkIdx, entity, new Sensor() { Range = range, Sensitivity = sense });
+                    writer.AddComponent(chunkIdx, entity, new Sensor() { Range = range, Sensitivity = sense });
                 }
                 /// <summary>
-                /// Adds buffers to the entity which will represent the replicant
+                /// Adds buffers to the entity which will represent the replicant: Nodes, Interactions
                 /// </summary>
-                /// <param name="ecb"></param>
+                /// <param name="writer"></param>
                 /// <param name="chunkIdx"></param>
                 /// <param name="entity"></param>
-                public static void AddMatrixBuffers(EntityCommandBuffer.ParallelWriter ecb, int chunkIdx, Entity entity) {
-                    ecb.AddBuffer<Node>(chunkIdx, entity);
-                    ecb.AddBuffer<Interaction>(chunkIdx, entity);
-                }
             }
+            // public static class ECBExtensions{
+            //     /// <summary>
+            //     /// Adds buffers (nodes, interactions) to an entity.
+            //     /// </summary>
+            //     /// <param name="ecb"></param>
+            //     /// <param name="chunkIdx"></param>
+            //     /// <param name="entity"></param>
+            //     /// <param name="inputNodes"></param>
+            //     /// <param name="outputNodes"></param>
+            //     /// <param name="inters"></param>
+            //     public static void AddBuffers(this EntityCommandBuffer.ParallelWriter ecb, int chunkIdx, Entity entity, int inputNodes = 2, int outputNodes = 1, int inters = 2) {
+            //         var _nodes = ecb.AddBuffer<Node>(chunkIdx, entity);
+            //         _nodes.Length = inputNodes;
+
+            //         var _inters = ecb.AddBuffer<Interaction>(chunkIdx, entity);
+            //         _inters.Length = inters;
+
+            //         for (int j = 0; j < inputNodes; j++) _nodes.Append(new Node(NodeType.Input));
+            //         for (int j = 0; j < outputNodes; j++) _nodes.Append(new(NodeType.Output));
+
+            //         _inters[0] = new(_nodes[0], _nodes[2]);
+            //         _inters[1] = new(_nodes[1], _nodes[2]);
+            //     }
+            // }
             public static class Constants {
                 /// <summary>
                 /// Float3 that represents world forward (0,0,1)
