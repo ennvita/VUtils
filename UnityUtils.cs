@@ -42,7 +42,7 @@ namespace VUtils {
                     writer.AddComponent(chunkIdx, entity, new ShipType() { Value = type });
 
                     // Physics Components
-                    writer.AddComponent<PhysicsVelocity>(chunkIdx, entity);
+                    writer.AddComponent(chunkIdx, entity, new PhysicsVelocity() { Linear = initialVelocity });
                     writer.AddComponent(chunkIdx, entity, new PhysicsCollider() { Value = SphereCollider.Create(new SphereGeometry() { Radius = 50f }, config.ShipFilter) });
                     writer.SetComponent(chunkIdx, entity, LocalTransform.FromPositionRotationScale(spawnPosition, quaternion.identity, 50f));
                     writer.AddComponent(chunkIdx, entity, new Velocity() { Value = initialVelocity });
@@ -176,7 +176,7 @@ namespace VUtils {
                     float angle = Mathf.Acos(dot / (mag1 * mag2));
                     return angle;
                 }
-                public static Vector3 AngleToVector3(float theta) {
+                public static Vector3 ConvertToVector3(float theta) {
                     Vector3 vec = new Vector3(Mathf.Cos(theta), Mathf.Sin(theta), 0);
                     return vec;
                 }
