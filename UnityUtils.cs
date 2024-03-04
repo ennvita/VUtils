@@ -36,14 +36,12 @@ namespace VUtils {
                 /// <param name="initialVelocity"></param>
                 /// <param name="range"></param>
                 /// <param name="sense"></param>
-                public static void CreateShip(EntityCommandBuffer.ParallelWriter writer, int chunkIdx, Entity entity, float3 spawnPosition, float3 initialVelocity, SpawnerConfig config, ShipClass type, float range = 0, float sense = 0) {
+                public static void CreateShip(EntityCommandBuffer.ParallelWriter writer, int chunkIdx, Entity entity, float3 spawnPosition, float3 initialVelocity, ShipClass type, float range = 0, float sense = 0) {
                     // Tag Components
                     writer.AddComponent<ShipTag>(chunkIdx, entity);
                     writer.AddComponent(chunkIdx, entity, new ShipType() { Value = type });
 
                     // Physics Components
-                    writer.AddComponent(chunkIdx, entity, new PhysicsVelocity() { Linear = initialVelocity });
-                    writer.AddComponent(chunkIdx, entity, new PhysicsCollider() { Value = SphereCollider.Create(new SphereGeometry() { Radius = 50f }, config.ShipFilter) });
                     writer.SetComponent(chunkIdx, entity, LocalTransform.FromPositionRotationScale(spawnPosition, quaternion.identity, 50f));
                     writer.AddComponent(chunkIdx, entity, new Velocity() { Value = initialVelocity });
                     writer.AddComponent(chunkIdx, entity, new Thrust() { Value = float3.zero });
