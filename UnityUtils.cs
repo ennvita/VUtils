@@ -43,8 +43,8 @@ namespace VUtils {
 
                     // Physics Components
                     writer.SetComponent(chunkIdx, entity, LocalTransform.FromPositionRotationScale(spawnPosition, quaternion.identity, 50f));
-                    writer.AddComponent(chunkIdx, entity, new Velocity() { Value = initialVelocity });
                     writer.AddComponent(chunkIdx, entity, new Thrust() { Value = float3.zero });
+                    // writer.AddComponent(chunkIdx, entity, new Velocity() { Value = initialVelocity });
 
                     // Ship Attribute Components
                     writer.AddComponent(chunkIdx, entity, new Sensor() { Range = range, Sensitivity = sense });
@@ -66,7 +66,7 @@ namespace VUtils {
             //     /// <param name="inputNodes"></param>
             //     /// <param name="outputNodes"></param>
             //     /// <param name="inters"></param>
-            //     public static void AddBuffers(this EntityCommandBuffer.ParallelWriter ecb, int chunkIdx, Entity entity, int inputNodes = 2, int outputNodes = 1, int inters = 2) {
+            //     public static void AddMatrixBuffers(this EntityCommandBuffer.ParallelWriter ecb, int chunkIdx, Entity entity, int inputNodes = 2, int outputNodes = 1, int inters = 2) {
             //         var _nodes = ecb.AddBuffer<Node>(chunkIdx, entity);
             //         _nodes.Length = inputNodes;
 
