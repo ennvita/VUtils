@@ -8,8 +8,46 @@ namespace VUtils {
         using Unity.Mathematics;
         using Unity.Transforms;
         namespace ECS {
+            using Unity.Collections;
             using Unity.Entities;
             using Unity.Physics;
+            public static class Extensions {
+                /// <summary>
+                /// 
+                /// </summary>
+                /// <param name="state"></param>
+                /// <param name="singleton"></param>
+                /// <returns></returns>
+                public static EntityCommandBuffer.ParallelWriter GetECBSingleton(ref SystemState state, BeginSimulationEntityCommandBufferSystem.Singleton singleton)
+                {
+                    var ecbSingleton = singleton;
+                    ecbSingleton.SetAllocator(Allocator.TempJob);
+                    var ecb = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged);
+                    return ecb.AsParallelWriter();
+                }
+                /// <summary>
+                /// Adds buffers (nodes, interactions) to an entity.
+                /// </summary>
+                /// <param name="ecb"></param>
+                /// <param name="chunkIdx"></param>
+                /// <param name="entity"></param>
+                /// <param name="inputNodes"></param>
+                /// <param name="outputNodes"></param>
+                /// <param name="inters"></param>
+                public static void AddMatrixBuffers(this EntityCommandBuffer.ParallelWriter ecb, int chunkIdx, Entity entity, int inputNodes = 2, int outputNodes = 1, int inters = 2) {
+                    var _nodes = ecb.AddBuffer<Node>(chunkIdx, entity);
+                    _nodes.Length = inputNodes;
+
+                    var _inters = ecb.AddBuffer<Interaction>(chunkIdx, entity);
+                    _inters.Length = inters;
+
+                    for (int j = 0; j < inputNodes; j++) _nodes.Append(new Node(NodeType.Input));
+                    for (int j = 0; j < outputNodes; j++) _nodes.Append(new(NodeType.Output));
+
+                    _inters[0] = new(_nodes[0], _nodes[2]);
+                    _inters[1] = new(_nodes[1], _nodes[2]);
+                }
+            }
             public static class Transforms {
                 public static float3 ClampMagnitude(float3 vector, float maxMagnitude) {
                     float sqrMagnitude = math.lengthsq(vector);
@@ -44,42 +82,11 @@ namespace VUtils {
                     // Physics Components
                     writer.SetComponent(chunkIdx, entity, LocalTransform.FromPositionRotationScale(spawnPosition, quaternion.identity, 50f));
                     writer.AddComponent(chunkIdx, entity, new Thrust() { Value = float3.zero });
-                    // writer.AddComponent(chunkIdx, entity, new Velocity() { Value = initialVelocity });
-
+                    writer.SetComponent(chunkIdx, entity, new PhysicsVelocity() { Linear = initialVelocity });
                     // Ship Attribute Components
                     writer.AddComponent(chunkIdx, entity, new Sensor() { Range = range, Sensitivity = sense });
                 }
-                /// <summary>
-                /// Adds buffers to the entity which will represent the replicant: Nodes, Interactions
-                /// </summary>
-                /// <param name="writer"></param>
-                /// <param name="chunkIdx"></param>
-                /// <param name="entity"></param>
             }
-            // public static class ECBExtensions{
-            //     /// <summary>
-            //     /// Adds buffers (nodes, interactions) to an entity.
-            //     /// </summary>
-            //     /// <param name="ecb"></param>
-            //     /// <param name="chunkIdx"></param>
-            //     /// <param name="entity"></param>
-            //     /// <param name="inputNodes"></param>
-            //     /// <param name="outputNodes"></param>
-            //     /// <param name="inters"></param>
-            //     public static void AddMatrixBuffers(this EntityCommandBuffer.ParallelWriter ecb, int chunkIdx, Entity entity, int inputNodes = 2, int outputNodes = 1, int inters = 2) {
-            //         var _nodes = ecb.AddBuffer<Node>(chunkIdx, entity);
-            //         _nodes.Length = inputNodes;
-
-            //         var _inters = ecb.AddBuffer<Interaction>(chunkIdx, entity);
-            //         _inters.Length = inters;
-
-            //         for (int j = 0; j < inputNodes; j++) _nodes.Append(new Node(NodeType.Input));
-            //         for (int j = 0; j < outputNodes; j++) _nodes.Append(new(NodeType.Output));
-
-            //         _inters[0] = new(_nodes[0], _nodes[2]);
-            //         _inters[1] = new(_nodes[1], _nodes[2]);
-            //     }
-            // }
             public static class Constants {
                 /// <summary>
                 /// Float3 that represents world forward (0,0,1)
