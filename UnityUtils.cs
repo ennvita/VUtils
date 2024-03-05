@@ -25,28 +25,6 @@ namespace VUtils {
                     var ecb = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged);
                     return ecb.AsParallelWriter();
                 }
-                /// <summary>
-                /// Adds buffers (nodes, interactions) to an entity.
-                /// </summary>
-                /// <param name="ecb"></param>
-                /// <param name="chunkIdx"></param>
-                /// <param name="entity"></param>
-                /// <param name="inputNodes"></param>
-                /// <param name="outputNodes"></param>
-                /// <param name="inters"></param>
-                public static void AddMatrixBuffers(this EntityCommandBuffer.ParallelWriter ecb, int chunkIdx, Entity entity, int inputNodes = 2, int outputNodes = 1, int inters = 2) {
-                    DynamicBuffer<Node> _nodes = ecb.SetBuffer<Node>(chunkIdx, entity);
-                    _nodes.Length = inputNodes;
-
-                    DynamicBuffer<Interaction> _inters = ecb.SetBuffer<Interaction>(chunkIdx, entity);
-                    _inters.Length = inters;
-
-                    for (int i = 0; i < inputNodes; i++) _nodes.Append(new Node(NodeType.Input));
-                    for (int i = 0; i < outputNodes; i++) _nodes.Append(new(NodeType.Output));
-
-                    _inters[0] = new(_nodes[0], _nodes[2]);
-                    _inters[1] = new(_nodes[1], _nodes[2]);
-                }
             }
             public static class Transforms {
                 public static float3 ClampMagnitude(float3 vector, float maxMagnitude) {
