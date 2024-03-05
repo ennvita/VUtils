@@ -35,14 +35,14 @@ namespace VUtils {
                 /// <param name="outputNodes"></param>
                 /// <param name="inters"></param>
                 public static void AddMatrixBuffers(this EntityCommandBuffer.ParallelWriter ecb, int chunkIdx, Entity entity, int inputNodes = 2, int outputNodes = 1, int inters = 2) {
-                    var _nodes = ecb.AddBuffer<Node>(chunkIdx, entity);
+                    DynamicBuffer<Node> _nodes = ecb.SetBuffer<Node>(chunkIdx, entity);
                     _nodes.Length = inputNodes;
 
-                    var _inters = ecb.AddBuffer<Interaction>(chunkIdx, entity);
+                    DynamicBuffer<Interaction> _inters = ecb.SetBuffer<Interaction>(chunkIdx, entity);
                     _inters.Length = inters;
 
-                    for (int j = 0; j < inputNodes; j++) _nodes.Append(new Node(NodeType.Input));
-                    for (int j = 0; j < outputNodes; j++) _nodes.Append(new(NodeType.Output));
+                    for (int i = 0; i < inputNodes; i++) _nodes.Append(new Node(NodeType.Input));
+                    for (int i = 0; i < outputNodes; i++) _nodes.Append(new(NodeType.Output));
 
                     _inters[0] = new(_nodes[0], _nodes[2]);
                     _inters[1] = new(_nodes[1], _nodes[2]);
