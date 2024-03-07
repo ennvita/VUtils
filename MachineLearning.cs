@@ -14,10 +14,9 @@ namespace VUtils {
             private static float Forward(float input, float bias, float weight) {
                 return input * bias + weight;
             }
-            public static DynamicBuffer<Interaction> Forward(DynamicBuffer<Interaction> inters) {
+            public static void Forward(DynamicBuffer<Interaction> inters) {
                 DynamicBuffer<Interaction> tmp = new();
-                for (int i = 0; i < inters.Length; i++)
-                {
+                for (int i = 0; i < inters.Length; i++) {
                     var output = Forward(inters[i].Input.Value, inters[i].Output.Bias, inters[i].Weight);
                     tmp[i] = new Interaction {
                         ID = inters[i].ID,
@@ -30,7 +29,7 @@ namespace VUtils {
                         }
                     };
                 }
-                return tmp;
+                inters.CopyFrom(tmp);
             }
             public static class ActivationFunctions {
                 public static float Sigmoid(float input) { return 1 / (float)(1 + Math.Exp(input)); }
