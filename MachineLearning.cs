@@ -1,7 +1,7 @@
 using System;
 using Unity.Entities;
 namespace VUtils {
-    namespace ML {
+    namespace MachineLearning {
         public static class NeuralNetwork {
             public static float Forward(float[,] inputs, float bias) {
                 float result = 0;
