@@ -26,7 +26,7 @@ namespace VUtils {
                         Input = inters[i].Input,
                         Output = new Node {
                             ID = inters[i].Output.ID,
-                            Bias = inters[i].Output.Value,
+                            Bias = inters[i].Output.Bias,
                             Type = inters[i].Output.Type,
                             Value = output
                         }
