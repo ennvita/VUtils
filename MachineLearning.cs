@@ -14,7 +14,11 @@ namespace VUtils {
             private static float Forward(float input, float bias, float weight) {
                 return input * bias + weight;
             }
-            public static void Forward(DynamicBuffer<Interaction> inters) {
+            /// <summary>
+            /// Forwards a DynamicBuffer, for use with Unity ECS (input * bias + weight)
+            /// </summary>
+            /// <param name="inters"></param>
+            public static void ForwardBuffer(DynamicBuffer<Interaction> inters) {
                 for (int i = 0; i < inters.Length; i++) {
                     var output = Forward(inters[i].Input.Value, inters[i].Output.Bias, inters[i].Weight);
                     inters[i] = new Interaction {
