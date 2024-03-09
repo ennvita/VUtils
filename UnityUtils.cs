@@ -64,6 +64,26 @@ namespace VUtils {
                     // Ship Attribute Components
                     writer.AddComponent(chunkIdx, entity, new Sensor() { Range = range, Sensitivity = sense });
                 }
+                /// <summary>
+                /// Adds necessary Dynamic buffers for the replicant matrix
+                /// </summary>
+                /// <param name="writer"></param>
+                /// <param name="chunkIdx"></param>
+                /// <param name="entity"></param>
+                /// <param name="inputs"></param>
+                /// <param name="outputs"></param>
+                /// <param name="interactions"></param>
+                public static void AddMatrixBuffers(this ref EntityCommandBuffer.ParallelWriter writer, int chunkIdx, Entity entity, NativeArray<InputNode> inputs, NativeArray<OutputNode> outputs, NativeArray<Interaction> interactions) {
+                    var _inputs = writer.AddBuffer<InputNode>(chunkIdx, entity);
+                    var _outputs = writer.AddBuffer<OutputNode>(chunkIdx, entity);
+                    writer.AddBuffer<HiddenNode>(chunkIdx, entity);
+
+                    var _interactions = writer.AddBuffer<Interaction>(chunkIdx, entity);
+
+                    _inputs.CopyFrom(inputs);
+                    _outputs.CopyFrom(outputs);
+                    _interactions.CopyFrom(interactions);
+                }
             }
             public static class Constants {
                 /// <summary>
